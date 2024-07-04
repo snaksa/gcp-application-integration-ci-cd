@@ -3,6 +3,8 @@ on: push
 jobs:
   job_id:
     runs-on: ubuntu-latest
+    container:
+      image: us-docker.pkg.dev/appintegration-toolkit/images/integrationcli:latest
     steps:
       - id: 'auth'
         uses: 'google-github-actions/auth@v2'
@@ -14,3 +16,6 @@ jobs:
 
       - name: 'Use gcloud CLI'
         run: 'gcloud info'
+
+      - name: 'Test integrationcli'
+        run: 'integrationcli integrations list'
