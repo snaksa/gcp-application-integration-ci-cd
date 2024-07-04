@@ -4,7 +4,10 @@ jobs:
   job_id:
     runs-on: ubuntu-latest
     steps:
-      - id: 'auth'
+      - name: 'Checkout code'
+        uses: 'actions/checkout@v4'
+
+      - name: 'GCP Auth'
         uses: 'google-github-actions/auth@v2'
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
@@ -26,3 +29,6 @@ jobs:
           $HOME/.integrationcli/bin/integrationcli prefs set -p $project -r $region -t $token
 
           $HOME/.integrationcli/bin/integrationcli integrations list
+
+      - name: 'Get current files'
+        run: 'ls -la'
