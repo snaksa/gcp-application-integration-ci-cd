@@ -19,10 +19,10 @@ jobs:
         run: 'curl -L https://raw.githubusercontent.com/GoogleCloudPlatform/application-integration-management-toolkit/main/downloadLatest.sh | sh -'
 
       - name: 'Add to path'
-        run: 'export PATH=$PATH:$HOME/.integrationcli/bin '
+        run: 'echo $HOME/.integrationcli/bin >> $GITHUB_PATH'
 
       - name: 'Show path'
-        run: 'echo $PATH'
+        run: 'echo $GITHUB_PATH'
 
       - name: 'Test integrationcli'
         run: 'integrationcli integrations list'
