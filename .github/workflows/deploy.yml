@@ -3,14 +3,7 @@ on: push
 jobs:
   job_id:
     runs-on: ubuntu-latest
-    container:
-      image: us-docker.pkg.dev/appintegration-toolkit/images/integrationcli:latest
     steps:
-      - id: 'Install node'
-        uses: 'actions/setup-node@v4'
-        with:
-          node-version: '20'
-
       - id: 'auth'
         uses: 'google-github-actions/auth@v2'
         with:
@@ -21,6 +14,9 @@ jobs:
 
       - name: 'Use gcloud CLI'
         run: 'gcloud info'
+
+      - name: 'Install integrationcli'
+        run: 'curl -L https://raw.githubusercontent.com/GoogleCloudPlatform/application-integration-management-toolkit/main/downloadLatest.sh | sh -'
 
       - name: 'Test integrationcli'
         run: 'integrationcli integrations list'
