@@ -30,9 +30,6 @@ jobs:
 
           $HOME/.integrationcli/bin/integrationcli integrations list
 
-      - name: 'Import existing JSON '
+      - name: 'Create integration JSON '
         run: |
-          $HOME/.integrationcli/bin/integrationcli integrations import --folder src --verbose
-
-      - name: 'Get current files'
-        run: 'ls -la'
+          $HOME/.integrationcli/bin/integrationcli integrations create --name my-second-integration --file src/my-second-integration.json
