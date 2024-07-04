@@ -32,7 +32,7 @@ jobs:
 
       - name: 'Import existing JSON '
         run: |
-          $HOME/.integrationcli/bin/integrationcli integrations import
+          $HOME/.integrationcli/bin/integrationcli integrations import --folder src --verbose
 
       - name: 'Get current files'
         run: 'ls -la'
