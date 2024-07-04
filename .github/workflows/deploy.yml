@@ -6,6 +6,11 @@ jobs:
     container:
       image: us-docker.pkg.dev/appintegration-toolkit/images/integrationcli:latest
     steps:
+      - id: 'Install node'
+        uses: 'actions/setup-node@v4'
+        with:
+          node-version: '20'
+
       - id: 'auth'
         uses: 'google-github-actions/auth@v2'
         with:
