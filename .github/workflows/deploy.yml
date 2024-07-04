@@ -18,5 +18,8 @@ jobs:
       - name: 'Install integrationcli'
         run: 'curl -L https://raw.githubusercontent.com/GoogleCloudPlatform/application-integration-management-toolkit/main/downloadLatest.sh | sh -'
 
+      - name: 'Show path'
+        run: 'echo $PATH'
+
       - name: 'Test integrationcli'
         run: 'integrationcli integrations list'
