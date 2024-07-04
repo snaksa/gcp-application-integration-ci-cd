@@ -19,4 +19,8 @@ jobs:
         run: 'curl -L https://raw.githubusercontent.com/GoogleCloudPlatform/application-integration-management-toolkit/main/downloadLatest.sh | sh -'
 
       - name: 'Test integrationcli'
-        run: '$HOME/.integrationcli/bin/integrationcli integrations list'
+        run: |
+          token=$(gcloud auth print-access-token)
+          project=$(gcloud config get-value project | head -n 1)
+          region=us-central1
+          $HOME/.integrationcli/bin/integrationcli integrations list -p $project -r $region -t $token
