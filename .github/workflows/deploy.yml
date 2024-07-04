@@ -30,5 +30,9 @@ jobs:
 
           $HOME/.integrationcli/bin/integrationcli integrations list
 
+      - name: 'Import existing JSON '
+        run: |
+          $HOME/.integrationcli/bin/integrationcli integrations import
+
       - name: 'Get current files'
         run: 'ls -la'
