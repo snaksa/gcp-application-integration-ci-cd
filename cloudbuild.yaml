@@ -6,11 +6,6 @@ steps:
 
   - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli'
     script: |
-      #!/usr/bin/env sh
+      #!/usr/bin/sh
       echo "Downloading integrationcli"
       token=$(gcloud auth print-access-token)
-      project=$(gcloud config get-value project | head -n 1)
-      region=us-central1
-      echo "Setting up integrationcli"
-      $HOME/.integrationcli/bin/integrationcli prefs set -p $project -r $region -t $token
-      $HOME/.integrationcli/bin/integrationcli integrations list
