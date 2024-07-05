@@ -49,4 +49,5 @@ steps:
       - |
         source /workspace/vars.env
         docker run us-docker.pkg.dev/appintegration-toolkit/images/integrationcli prefs set -p "$project" -r "$region" -t "$token"
+        docker run us-docker.pkg.dev/appintegration-toolkit/images/integrationcli integrations list
     timeout: 240s
