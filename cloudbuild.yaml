@@ -61,7 +61,11 @@ steps:
   - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli'
     entrypoint: 'integrationcli'
     timeout: 240s
-    args: ['integrations', 'list', '-p', '$PROJECT_ID', '-r', '$region', '-t', '$token']
+    env:
+      - 'project=${project}'
+      - 'region=${region}'
+      - 'token=${token}'
+    args: ['integrations', 'list', '-p', '$project', '-r', '$region', '-t', '$token']
 #
 #  - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli'
 #    entrypoint: 'integrationcli'
