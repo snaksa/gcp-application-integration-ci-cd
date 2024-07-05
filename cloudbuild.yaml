@@ -6,9 +6,9 @@ steps:
 
   - name: 'ubuntu'
     script: |
-      token=$(gcloud auth print-access-token)
-      project=$(gcloud config get-value project | head -n 1)
-      region=us-central1
+      export token=$(gcloud auth print-access-token)
+      export project=$(gcloud config get-value project | head -n 1)
+      export region=us-central1
 
   - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli'
     entrypoint: 'integrationcli'
