@@ -121,6 +121,6 @@ steps:
         integrationcli prefs set -p "$project" -r "$region" -t "$token"
         
         # Run the first integrationcli command
-        integrationcli integrations list
+        integrationcli integrations apply -f . -e dev --wait=true
 options:
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
