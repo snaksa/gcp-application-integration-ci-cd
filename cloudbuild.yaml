@@ -5,6 +5,10 @@ steps:
 #    args: ['builds', 'list']
 
   - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli'
-    entrypoint: 'integrationcli'
-    timeout: 240s
-    args: ['integrations', 'list']
+    script: |
+      #!/usr/bin/env bash
+      token=$(gcloud auth print-access-token)
+      project=$(gcloud config get-value project | head -n 1)
+      region=us-central1
+      integrationcli prefs set -p $project -r $region -t $token
+      integrationcli integrations list
