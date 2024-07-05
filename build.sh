@@ -3,6 +3,7 @@
 token=$(gcloud auth print-access-token)
 project=$(gcloud config get-value project | head -n 1)
 region=us-central1
+gcloud spanner instances list
 echo "Project: $project"
 echo "Region: $region"
 echo "Token: $token"
