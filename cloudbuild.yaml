@@ -28,9 +28,9 @@ steps:
         region=us-central1
         pwd
         ls -la
-        integrationcli prefs set -p $project -r $region -t $token
+        /.integrationcli/bin/integrationcli prefs set -p $project -r $region -t $token
 
-        integrationcli integrations list
+        /.integrationcli/bin/integrationcli integrations list
     timeout: 240s
 #
 #
