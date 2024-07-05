@@ -58,7 +58,6 @@ steps:
     args:
       - '-c'
       - |
-        ls -la
         ./build.sh
     timeout: 240s
 
