@@ -1,0 +1,12 @@
+{
+  "displayName": "integration-auth",
+  "visibility": "CLIENT_VISIBLE",
+  "state": "VALID",
+  "decryptedCredential": {
+    "credentialType": "SERVICE_ACCOUNT",
+    "serviceAccountCredentials": {
+      "serviceAccount": "secret-manager-access@big-formula-425706-n4.iam.gserviceaccount.com",
+      "scope": "https://www.googleapis.com/auth/cloud-platform"
+    }
+  }
+}
