@@ -33,7 +33,7 @@ steps:
 #    timeout: 240s
 #    args: ['prefs', 'set', '-p', '$project', '-r', '$region', '-t', '$token']
 
-  - name: 'gcr.io/cloud-builders/bash'
+  - name: 'ubuntu'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -42,11 +42,11 @@ steps:
         echo "project=$(gcloud config get-value project | head -n 1)" >> /workspace/vars.env
         echo "region=us-central1" >> /workspace/vars.env
 
-  - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli'
+  - name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
         source /workspace/vars.env
-        integrationcli --token "$token" --project "$project" --region "$region"
+        docker run us-docker.pkg.dev/appintegration-toolkit/images/integrationcli integrationcli --token "$token" --project "$project" --region "$region"
     timeout: 240s
