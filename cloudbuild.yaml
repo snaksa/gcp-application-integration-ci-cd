@@ -15,6 +15,11 @@ steps:
 #    timeout: 240s
 #    args: ['prefs', 'set', '-p', '$project', '-r', '$region', '-t', '$token']
 #
+#  - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli'
+#    entrypoint: 'integrationcli'
+#    timeout: 240s
+#    args: ['prefs', 'set', '-p', '$project', '-r', '$region', '-t', '$token']
+#
 
 
 #  - name: 'ubuntu'
@@ -66,3 +71,26 @@ steps:
 #    entrypoint: 'integrationcli'
 #    timeout: 240s
 #    args: ['integrations', 'list']
+
+
+  # Step to pull the Docker image
+#  - name: 'gcr.io/cloud-builders/docker'
+#    entrypoint: 'bash'
+#    args:
+#      - '-c'
+#      - |
+#        docker pull us-docker.pkg.dev/appintegration-toolkit/images/integrationcli-builder:latest
+#
+#  # Step to use the CLI from the Docker image
+#  - name: 'gcr.io/cloud-builders/docker'
+#    entrypoint: 'bash'
+#    args:
+#      - '-c'
+#      - |
+#        docker run --rm \
+#          -v /workspace:/workspace \  # Mount workspace if needed
+#          us-docker.pkg.dev/appintegration-toolkit/images/integrationcli-builder:latest \
+#          integrationcli
+
+options:
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
