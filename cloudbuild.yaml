@@ -26,9 +26,9 @@ steps:
         token=$(gcloud auth print-access-token)
         project=$(gcloud config get-value project | head -n 1)
         region=us-central1
-        $HOME/.integrationcli/bin/integrationcli prefs set -p $project -r $region -t $token
+        integrationcli prefs set -p $project -r $region -t $token
 
-        $HOME/.integrationcli/bin/integrationcli integrations list
+        integrationcli integrations list
     timeout: 240s
 #
 #
