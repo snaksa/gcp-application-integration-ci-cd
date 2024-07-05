@@ -4,8 +4,13 @@ steps:
 #    timeout: 240s
 #    args: ['builds', 'list']
 
-  - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli'
+  - name: 'ubuntu'
     script: |
-      #!/usr/bin/sh
-      echo "Downloading integrationcli"
       token=$(gcloud auth print-access-token)
+      project=$(gcloud config get-value project | head -n 1)
+      region=us-central1
+
+  - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli'
+    entrypoint: 'integrationcli'
+    timeout: 240s
+    args: ['prefs', 'set', '-p', '$project', '-r', '$region', '-t', '$token']
