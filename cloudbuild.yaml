@@ -53,13 +53,13 @@ steps:
 #        export project=$(gcloud config get-value project | head -n 1)
 #        export region=us-central1
 
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        ./build.sh
-    timeout: 240s
+#  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+#    entrypoint: 'bash'
+#    args:
+#      - '-c'
+#      - |
+#        ./build.sh
+#    timeout: 240s
 
 #  - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli'
 #    entrypoint: 'integrationcli'
@@ -91,5 +91,36 @@ steps:
 #          us-docker.pkg.dev/appintegration-toolkit/images/integrationcli-builder:latest \
 #          integrationcli
 
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        # Authenticate to Google Cloud
+        gcloud auth configure-docker us-docker.pkg.dev
+        
+        # Set multiple variables
+        token=$(gcloud auth print-access-token) 
+        project=$(gcloud config get-value project | head -n 1)
+        region="us-central1"
+        
+        # Write variables to a file
+        echo "token=${token}" >> /workspace/env_vars.txt
+        echo "project=${project}" >> /workspace/env_vars.txt
+        echo "region=${region}" >> /workspace/env_vars.txt
+
+  - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli:latest'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        
+        # Load the variables
+        source /workspace/env_vars.txt
+        
+        integrationcli prefs set -p "$project" -r "$region" -t "$token"
+        
+        # Run the first integrationcli command
+        integrationcli integrations list
 options:
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
