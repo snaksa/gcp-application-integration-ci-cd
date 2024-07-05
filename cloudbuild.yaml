@@ -48,5 +48,5 @@ steps:
       - '-c'
       - |
         source /workspace/vars.env
-        docker run us-docker.pkg.dev/appintegration-toolkit/images/integrationcli prefs --token "$token" --project "$project" --region "$region"
+        docker run us-docker.pkg.dev/appintegration-toolkit/images/integrationcli prefs set -p "$project" -r "$region" -t "$token"
     timeout: 240s
