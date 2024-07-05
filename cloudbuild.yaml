@@ -14,15 +14,21 @@ steps:
 #    entrypoint: 'integrationcli'
 #    timeout: 240s
 #    args: ['prefs', 'set', '-p', '$project', '-r', '$region', '-t', '$token']
+#
 
 
-  - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli'
+  - name: 'ubuntu'
     entrypoint: 'sh'
     args:
       - '-c'
       - |
-        token=$(gcloud auth print-access-token)
-        project=$(gcloud config get-value project | head -n 1)
-        region=us-central1
-        integrationcli --token "$token" --project "$project" --region "$region"
+        export token=$(gcloud auth print-access-token)
+        export project=$(gcloud config get-value project | head -n 1)
+        export region=us-central1
     timeout: 240s
+
+
+  - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli'
+    entrypoint: 'integrationcli'
+    timeout: 240s
+    args: ['prefs', 'set', '-p', '$project', '-r', '$region', '-t', '$token']
