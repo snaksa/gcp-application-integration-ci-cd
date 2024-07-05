@@ -67,6 +67,8 @@ substitutions:
   project: $(gcloud config get-value project | head -n 1)
   region: us-central1
   token: $(gcloud auth print-access-token)
+options:
+  dynamicSubstitutions: true
 #
 #  - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli'
 #    entrypoint: 'integrationcli'
