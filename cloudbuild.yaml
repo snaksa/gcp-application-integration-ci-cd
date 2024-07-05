@@ -53,10 +53,8 @@ steps:
     args:
       - '-c'
       - |
-        export token=$(gcloud auth print-access-token)
-        export project=$(gcloud config get-value project | head -n 1)
-        export region=us-central1
-        docker run us-docker.pkg.dev/appintegration-toolkit/images/integrationcli integrations list -p "$project" -r "$region" -t "$token"
+        ls -la
+        ./build.sh
     timeout: 240s
 
 #  - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli'
