@@ -1,5 +1,10 @@
 steps:
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: 'gcloud'
+#  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+#    entrypoint: 'gcloud'
+#    timeout: 240s
+#    args: ['builds', 'list']
+
+  - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli'
+    entrypoint: 'integrationcli'
     timeout: 240s
-    args: ['builds', 'list']
+    args: ['integrations', 'list']
