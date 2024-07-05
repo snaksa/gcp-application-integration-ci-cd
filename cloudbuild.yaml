@@ -17,21 +17,21 @@ steps:
 #
 
 
-  - name: 'ubuntu'
-    entrypoint: 'sh'
-    args:
-      - '-c'
-      - |
-        curl -L https://raw.githubusercontent.com/GoogleCloudPlatform/application-integration-management-toolkit/main/downloadLatest.sh | sh -
-        token=$(gcloud auth print-access-token)
-        project=$(gcloud config get-value project | head -n 1)
-        region=us-central1
-        pwd
-        ls -la
-        /.integrationcli/bin/integrationcli prefs set -p $project -r $region -t $token
-
-        /.integrationcli/bin/integrationcli integrations list
-    timeout: 240s
+#  - name: 'ubuntu'
+#    entrypoint: 'sh'
+#    args:
+#      - '-c'
+#      - |
+#        curl -L https://raw.githubusercontent.com/GoogleCloudPlatform/application-integration-management-toolkit/main/downloadLatest.sh | sh -
+#        token=$(gcloud auth print-access-token)
+#        project=$(gcloud config get-value project | head -n 1)
+#        region=us-central1
+#        pwd
+#        ls -la
+#        /.integrationcli/bin/integrationcli prefs set -p $project -r $region -t $token
+#
+#        /.integrationcli/bin/integrationcli integrations list
+#    timeout: 240s
 #
 #
 #  - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli'
@@ -39,14 +39,14 @@ steps:
 #    timeout: 240s
 #    args: ['prefs', 'set', '-p', '$project', '-r', '$region', '-t', '$token']
 
-#  - name: 'ubuntu'
-#    entrypoint: 'bash'
-#    args:
-#      - '-c'
-#      - |
-#        echo "token=$(gcloud auth print-access-token)" > /workspace/vars.env
-#        echo "project=$(gcloud config get-value project | head -n 1)" >> /workspace/vars.env
-#        echo "region=us-central1" >> /workspace/vars.env
+  - name: 'ubuntu'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        export token=$(gcloud auth print-access-token)
+        export project=$(gcloud config get-value project | head -n 1)
+        export region=us-central1
 
 #  - name: 'gcr.io/cloud-builders/docker'
 #    entrypoint: 'bash'
@@ -58,10 +58,10 @@ steps:
 #        docker run us-docker.pkg.dev/appintegration-toolkit/images/integrationcli integrations list
 #    timeout: 240s
 
-#  - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli'
-#    entrypoint: 'integrationcli'
-#    timeout: 240s
-#    args: ['prefs', 'set', '-p', '${project}', '-r', '${region}', '-t', '${token}']
+  - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli'
+    entrypoint: 'integrationcli'
+    timeout: 240s
+    args: ['integrations', 'list', '-p', '$project', '-r', '$region', '-t', '$token']
 #
 #  - name: 'us-docker.pkg.dev/appintegration-toolkit/images/integrationcli'
 #    entrypoint: 'integrationcli'
