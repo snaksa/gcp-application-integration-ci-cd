@@ -1,49 +1,995 @@
 {
+  "name": "projects/202416205871/locations/us-central1/integrations/generate-auth-token-integration/versions/71baff38-648c-48a6-a610-b09508ea3c72",
+  "updateTime": "2024-07-08T09:02:22.879Z",
+  "createTime": "2024-07-08T08:59:01.346Z",
+  "lastModifierEmail": "sinan.shaban@freestar.io",
   "triggerConfigs": [{
-    "label": "API Trigger",
+    "label": "SecretManager Trigger",
     "startTasks": [{
-      "taskId": "1"
+      "taskId": "34"
     }],
     "properties": {
-      "Trigger name": "json_structure_mapping_API_1"
+      "Trigger name": "FreestarDev_API_3"
     },
     "triggerType": "API",
-    "triggerNumber": "1",
-    "triggerId": "api_trigger/json_structure_mapping_API_1"
+    "triggerNumber": "3",
+    "triggerId": "api_trigger/FreestarDev_API_3",
+    "position": {
+      "x": -320,
+      "y": -976
+    }
   }],
   "taskConfigs": [{
     "task": "FieldMappingTask",
-    "taskId": "1",
+    "taskId": "10",
     "parameters": {
       "FieldMappingConfigTaskParameterKey": {
         "key": "FieldMappingConfigTaskParameterKey",
         "value": {
-          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"JSON_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$new_structure_json_template$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"RESOLVE_TEMPLATE\"\n            }\n          }\n        }, {\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"TO_JSON\"\n            }\n          }\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$output_order_json$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"BOOLEAN_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$salesforce-sandbox-api-access-token$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"SPLIT\"\n            }\n          },\n          \"parameters\": [{\n            \"initialValue\": {\n              \"literalValue\": {\n                \"stringValue\": \".\"\n              }\n            }\n          }]\n        }, {\n          \"functionType\": {\n            \"stringArrayFunction\": {\n              \"functionName\": \"GET\"\n            }\n          },\n          \"parameters\": [{\n            \"initialValue\": {\n              \"literalValue\": {\n                \"intValue\": \"1\"\n              }\n            }\n          }]\n        }, {\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"DECODE_BASE64_STRING\"\n            }\n          }\n        }, {\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"TO_JSON\"\n            }\n          }\n        }, {\n          \"functionType\": {\n            \"jsonFunction\": {\n              \"functionName\": \"GET_PROPERTY\"\n            }\n          },\n          \"parameters\": [{\n            \"initialValue\": {\n              \"literalValue\": {\n                \"stringValue\": \"exp\"\n              }\n            }\n          }]\n        }, {\n          \"functionType\": {\n            \"jsonFunction\": {\n              \"functionName\": \"TO_INT\"\n            }\n          }\n        }, {\n          \"functionType\": {\n            \"intFunction\": {\n              \"functionName\": \"MULTIPLY\"\n            }\n          },\n          \"parameters\": [{\n            \"initialValue\": {\n              \"literalValue\": {\n                \"intValue\": \"1000\"\n              }\n            }\n          }]\n        }, {\n          \"functionType\": {\n            \"intFunction\": {\n              \"functionName\": \"LESS_THAN\"\n            }\n          },\n          \"parameters\": [{\n            \"initialValue\": {\n              \"baseFunction\": {\n                \"functionType\": {\n                  \"baseFunction\": {\n                    \"functionName\": \"NOW_IN_MILLIS\"\n                  }\n                }\n              }\n            }\n          }]\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$access_token_expired$\",\n      \"fieldType\": \"BOOLEAN_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
         }
       }
     },
+    "synchronousCallFailurePolicy": {
+      "retryStrategy": "IGNORE"
+    },
+    "nextTasks": [{
+      "taskId": "12",
+      "condition": "$access_token_expired$ \u003d false",
+      "displayName": "valid",
+      "description": "If the access token is valid continue the flow"
+    }, {
+      "taskId": "33",
+      "condition": "$access_token_expired$ \u003d true",
+      "displayName": "expired",
+      "description": "If its expiration time has passed or the mapping fails then generate a new token"
+    }],
     "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
-    "displayName": "Data Mapping"
+    "displayName": "Verify Token",
+    "description": "Try to verify the access token",
+    "externalTaskType": "NORMAL_TASK",
+    "position": {
+      "x": -640,
+      "y": -464
+    }
+  }, {
+    "task": "JavaScriptTask",
+    "taskId": "12",
+    "parameters": {
+      "script": {
+        "key": "script",
+        "value": {
+          "stringValue": "\n/**\n * Function that is called during the JavaScript Task execution.\n * @param {IntegrationEvent} event\n */\nfunction executeScript(event) {\n    event.log(\"Valid access token available. Continue...\");\n}"
+        }
+      }
+    },
+    "taskExecutionStrategy": "WHEN_ANY_SUCCEED",
+    "displayName": "Continue flow",
+    "externalTaskType": "NORMAL_TASK",
+    "position": {
+      "x": -640,
+      "y": 624
+    }
+  }, {
+    "task": "Secret Manager - Access",
+    "taskId": "13",
+    "parameters": {
+      "projectsId": {
+        "key": "projectsId",
+        "value": {
+          "stringValue": "$project_id$"
+        }
+      },
+      "authConfigName": {
+        "key": "authConfigName",
+        "value": {
+          "stringValue": "$`CONFIG_salesforce_fad_integration_service_account`$"
+        }
+      },
+      "secretsId": {
+        "key": "secretsId",
+        "value": {
+          "stringValue": "$`CONFIG_client_id_secret_name`$"
+        }
+      },
+      "authConfig": {
+        "key": "authConfig",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.authconfig.AuthConfigTaskParam\"\n}"
+        }
+      },
+      "response": {
+        "key": "response",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_13_response`$"]
+          }
+        }
+      },
+      "taskTemplateId": {
+        "key": "taskTemplateId",
+        "value": {
+          "stringValue": "4a22d253-e6f9-4b73-80a5-e20a452b2b47"
+        }
+      },
+      "versionsId": {
+        "key": "versionsId",
+        "value": {
+          "stringValue": "latest"
+        }
+      }
+    },
+    "synchronousCallFailurePolicy": {
+      "retryStrategy": "IGNORE"
+    },
+    "nextTasks": [{
+      "taskId": "15"
+    }],
+    "taskExecutionStrategy": "WHEN_ANY_SUCCEED",
+    "displayName": "Get client_id",
+    "description": "Get client_id from Secret Manager",
+    "taskTemplate": "Secret Manager - Access",
+    "externalTaskType": "NORMAL_TASK",
+    "position": {
+      "x": -320,
+      "y": -288
+    }
+  }, {
+    "task": "Secret Manager - Access",
+    "taskId": "15",
+    "parameters": {
+      "projectsId": {
+        "key": "projectsId",
+        "value": {
+          "stringValue": "$project_id$"
+        }
+      },
+      "authConfigName": {
+        "key": "authConfigName",
+        "value": {
+          "stringValue": "$`CONFIG_salesforce_fad_integration_service_account`$"
+        }
+      },
+      "secretsId": {
+        "key": "secretsId",
+        "value": {
+          "stringValue": "$`CONFIG_client_secret_secret_name`$"
+        }
+      },
+      "authConfig": {
+        "key": "authConfig",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.authconfig.AuthConfigTaskParam\"\n}"
+        }
+      },
+      "response": {
+        "key": "response",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_15_response`$"]
+          }
+        }
+      },
+      "taskTemplateId": {
+        "key": "taskTemplateId",
+        "value": {
+          "stringValue": "4a22d253-e6f9-4b73-80a5-e20a452b2b47"
+        }
+      },
+      "versionsId": {
+        "key": "versionsId",
+        "value": {
+          "stringValue": "latest"
+        }
+      }
+    },
+    "synchronousCallFailurePolicy": {
+      "retryStrategy": "IGNORE"
+    },
+    "nextTasks": [{
+      "taskId": "16"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "Get client_secret",
+    "description": "Get client_secret from Secret Manager",
+    "taskTemplate": "Secret Manager - Access",
+    "externalTaskType": "NORMAL_TASK",
+    "position": {
+      "x": -320,
+      "y": -208
+    }
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "16",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$`Task_13_response`$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"jsonFunction\": {\n              \"functionName\": \"GET_PROPERTY\"\n            }\n          },\n          \"parameters\": [{\n            \"initialValue\": {\n              \"literalValue\": {\n                \"stringValue\": \"payload.data\"\n              }\n            }\n          }]\n        }, {\n          \"functionType\": {\n            \"jsonFunction\": {\n              \"functionName\": \"TO_STRING\"\n            }\n          }\n        }, {\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"DECODE_BASE64_STRING\"\n            }\n          }\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$client_id$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$`Task_15_response`$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"jsonFunction\": {\n              \"functionName\": \"GET_PROPERTY\"\n            }\n          },\n          \"parameters\": [{\n            \"initialValue\": {\n              \"literalValue\": {\n                \"stringValue\": \"payload.data\"\n              }\n            }\n          }]\n        }, {\n          \"functionType\": {\n            \"jsonFunction\": {\n              \"functionName\": \"TO_STRING\"\n            }\n          }\n        }, {\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"DECODE_BASE64_STRING\"\n            }\n          }\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$client_secret$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "synchronousCallFailurePolicy": {
+      "retryStrategy": "IGNORE"
+    },
+    "nextTasks": [{
+      "taskId": "17",
+      "displayName": "exists",
+      "description": "If client_secret exists build the authentication payload object"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "Map client_id and client_secret",
+    "description": "Decode the secret value",
+    "externalTaskType": "NORMAL_TASK",
+    "position": {
+      "x": -320,
+      "y": -112
+    }
+  }, {
+    "task": "JavaScriptTask",
+    "taskId": "17",
+    "parameters": {
+      "script": {
+        "key": "script",
+        "value": {
+          "stringValue": "\n/**\n * Function that is called during the JavaScript Task execution.\n * @param {IntegrationEvent} event\n */\nfunction executeScript(event) {\n    const payload \u003d {\n        \"client_id\": event.getParameter(\"client_id\"),\n        \"client_secret\": event.getParameter(\"client_secret\"),\n        \"grant_type\": \"client_credentials\",\n        \"audience\": event.getParameter(\"fad_api_audience\")\n    };\n\n    event.setParameter(\"auth_payload\", JSON.stringify(payload));\n}"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "2"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "Generate auth request payload",
+    "description": "Generate the POST body to get a new access token",
+    "externalTaskType": "NORMAL_TASK",
+    "position": {
+      "x": -320,
+      "y": -32
+    }
+  }, {
+    "task": "GenericRestV2Task",
+    "taskId": "18",
+    "parameters": {
+      "throwError": {
+        "key": "throwError",
+        "value": {
+          "booleanValue": false
+        }
+      },
+      "responseBody": {
+        "key": "responseBody",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_18_responseBody`$"]
+          }
+        }
+      },
+      "disableSSLValidation": {
+        "key": "disableSSLValidation",
+        "value": {
+          "booleanValue": false
+        }
+      },
+      "httpParams": {
+        "key": "httpParams",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.ParameterMap\",\n  \"entries\": [{\n    \"key\": {\n      \"literalValue\": {\n        \"stringValue\": \"content-type\"\n      }\n    },\n    \"value\": {\n      \"literalValue\": {\n        \"stringValue\": \"application/json\"\n      }\n    }\n  }]\n}"
+        }
+      },
+      "authConfigName": {
+        "key": "authConfigName",
+        "value": {
+          "stringValue": "$`CONFIG_salesforce_fad_integration_service_account`$"
+        }
+      },
+      "authConfig": {
+        "key": "authConfig",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.authconfig.AuthConfigTaskParam\"\n}"
+        }
+      },
+      "responseHeader": {
+        "key": "responseHeader",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_18_responseHeader`$"]
+          }
+        }
+      },
+      "userAgent": {
+        "key": "userAgent",
+        "value": {
+          "stringValue": ""
+        }
+      },
+      "httpMethod": {
+        "key": "httpMethod",
+        "value": {
+          "stringValue": "POST"
+        }
+      },
+      "responseStatus": {
+        "key": "responseStatus",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_18_responseStatus`$"]
+          }
+        }
+      },
+      "url": {
+        "key": "url",
+        "value": {
+          "stringValue": "$update_access_token_secret_url$"
+        }
+      },
+      "useSSL": {
+        "key": "useSSL",
+        "value": {
+          "booleanValue": false
+        }
+      },
+      "urlFetchingService": {
+        "key": "urlFetchingService",
+        "value": {
+          "stringValue": "HARPOON"
+        }
+      },
+      "urlQueryStrings": {
+        "key": "urlQueryStrings"
+      },
+      "requestorId": {
+        "key": "requestorId",
+        "value": {
+          "stringValue": ""
+        }
+      },
+      "jsonAdditionalHeaders": {
+        "key": "jsonAdditionalHeaders",
+        "value": {
+          "jsonValue": "null"
+        }
+      },
+      "requestBody": {
+        "key": "requestBody",
+        "value": {
+          "stringValue": "$update_secret_payload$"
+        }
+      },
+      "followRedirects": {
+        "key": "followRedirects",
+        "value": {
+          "booleanValue": true
+        }
+      },
+      "additionalHeaders": {
+        "key": "additionalHeaders"
+      }
+    },
+    "synchronousCallFailurePolicy": {
+      "retryStrategy": "IGNORE"
+    },
+    "nextTasks": [{
+      "taskId": "12"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "Update access token secret",
+    "externalTaskType": "NORMAL_TASK",
+    "position": {
+      "x": -320,
+      "y": 496
+    }
+  }, {
+    "task": "GenericRestV2Task",
+    "taskId": "2",
+    "parameters": {
+      "throwError": {
+        "key": "throwError",
+        "value": {
+          "booleanValue": false
+        }
+      },
+      "responseBody": {
+        "key": "responseBody",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_2_responseBody`$"]
+          }
+        }
+      },
+      "disableSSLValidation": {
+        "key": "disableSSLValidation",
+        "value": {
+          "booleanValue": false
+        }
+      },
+      "httpParams": {
+        "key": "httpParams",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.ParameterMap\",\n  \"entries\": [{\n    \"key\": {\n      \"literalValue\": {\n        \"stringValue\": \"content-type\"\n      }\n    },\n    \"value\": {\n      \"literalValue\": {\n        \"stringValue\": \"application/json\"\n      }\n    }\n  }]\n}"
+        }
+      },
+      "authConfigName": {
+        "key": "authConfigName",
+        "value": {
+          "stringValue": ""
+        }
+      },
+      "responseHeader": {
+        "key": "responseHeader",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_2_responseHeader`$"]
+          }
+        }
+      },
+      "userAgent": {
+        "key": "userAgent",
+        "value": {
+          "stringValue": ""
+        }
+      },
+      "httpMethod": {
+        "key": "httpMethod",
+        "value": {
+          "stringValue": "POST"
+        }
+      },
+      "responseStatus": {
+        "key": "responseStatus",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_2_responseStatus`$"]
+          }
+        }
+      },
+      "url": {
+        "key": "url",
+        "value": {
+          "stringValue": "$`CONFIG_fad_api_auth_url`$"
+        }
+      },
+      "useSSL": {
+        "key": "useSSL",
+        "value": {
+          "booleanValue": false
+        }
+      },
+      "urlFetchingService": {
+        "key": "urlFetchingService",
+        "value": {
+          "stringValue": "HARPOON"
+        }
+      },
+      "urlQueryStrings": {
+        "key": "urlQueryStrings"
+      },
+      "requestorId": {
+        "key": "requestorId",
+        "value": {
+          "stringValue": ""
+        }
+      },
+      "jsonAdditionalHeaders": {
+        "key": "jsonAdditionalHeaders",
+        "value": {
+          "jsonValue": "null"
+        }
+      },
+      "requestBody": {
+        "key": "requestBody",
+        "value": {
+          "stringValue": "$auth_payload$"
+        }
+      },
+      "followRedirects": {
+        "key": "followRedirects",
+        "value": {
+          "booleanValue": true
+        }
+      },
+      "additionalHeaders": {
+        "key": "additionalHeaders"
+      }
+    },
+    "nextTasks": [{
+      "taskId": "3"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "Request new token",
+    "description": "Call the FAD API to get a new access token",
+    "externalTaskType": "NORMAL_TASK",
+    "position": {
+      "x": -320,
+      "y": 64
+    }
+  }, {
+    "task": "JavaScriptTask",
+    "taskId": "22",
+    "parameters": {
+      "script": {
+        "key": "script",
+        "value": {
+          "stringValue": "\n/**\n * Function that is called during the JavaScript Task execution.\n * @param {IntegrationEvent} event\n */\nfunction executeScript(event) {\n    const payload \u003d {\n        payload: {\n            data: event.getParameter(\u0027encoded_access_token\u0027)\n        }\n    };\n\n    event.setParameter(\"update_secret_payload\", JSON.stringify(payload));\n    \n    event.setParameter(\"update_access_token_secret_url\", `https://secretmanager.googleapis.com/v1/projects/${event.getParameter(\"project_id\")}/secrets/${event.getParameter(\"access_token_secret_name\")}:addVersion`);\n}"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "18"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "Map update secret payload",
+    "description": "Generate a POST body to store the new access token in Secret Manager",
+    "externalTaskType": "NORMAL_TASK",
+    "position": {
+      "x": -320,
+      "y": 400
+    }
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "23",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$salesforce-sandbox-api-access-token$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"TO_BASE_64\"\n            }\n          }\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$encoded_access_token$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "22"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "Encode access token",
+    "externalTaskType": "NORMAL_TASK",
+    "position": {
+      "x": -320,
+      "y": 304
+    }
+  }, {
+    "task": "JavaScriptTask",
+    "taskId": "26",
+    "parameters": {
+      "script": {
+        "key": "script",
+        "value": {
+          "stringValue": "\n/**\n * Function that is called during the JavaScript Task execution.\n * @param {IntegrationEvent} event\n */\nfunction executeScript(event) {\n}"
+        }
+      }
+    },
+    "synchronousCallFailurePolicy": {
+      "retryStrategy": "NONE"
+    },
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "[TODO] Handle auth error",
+    "description": "If the generation of new token fails handle the error",
+    "externalTaskType": "NORMAL_TASK",
+    "position": {
+      "x": 32,
+      "y": 240
+    }
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "3",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"JSON_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$`Task_2_responseBody`$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"TO_JSON\"\n            }\n          }\n        }, {\n          \"functionType\": {\n            \"jsonFunction\": {\n              \"functionName\": \"GET_PROPERTY\"\n            }\n          },\n          \"parameters\": [{\n            \"initialValue\": {\n              \"literalValue\": {\n                \"stringValue\": \"access_token\"\n              }\n            }\n          }]\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$salesforce-sandbox-api-access-token$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "synchronousCallFailurePolicy": {
+      "retryStrategy": "IGNORE"
+    },
+    "nextTasks": [{
+      "taskId": "23",
+      "condition": "$salesforce-sandbox-api-access-token$ !\u003d \"\"",
+      "displayName": "success",
+      "description": "If token is successfully generated try to encode it"
+    }, {
+      "taskId": "26",
+      "condition": "$salesforce-sandbox-api-access-token$ \u003d \"\"",
+      "displayName": "error"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "Map Access Token from API",
+    "externalTaskType": "NORMAL_TASK",
+    "position": {
+      "x": -320,
+      "y": 160
+    }
+  }, {
+    "task": "JavaScriptTask",
+    "taskId": "33",
+    "parameters": {
+      "script": {
+        "key": "script",
+        "value": {
+          "stringValue": "\n/**\n * Function that is called during the JavaScript Task execution.\n * @param {IntegrationEvent} event\n */\nfunction executeScript(event) {\n    // reset the currently stored access token\n    event.setParameter(\"salesforce-sandbox-api-access-token\", \"\");\n}"
+        }
+      }
+    },
+    "synchronousCallFailurePolicy": {
+      "retryStrategy": "IGNORE"
+    },
+    "nextTasks": [{
+      "taskId": "13"
+    }],
+    "taskExecutionStrategy": "WHEN_ANY_SUCCEED",
+    "displayName": "Reset access token variable",
+    "description": "Reset the access token variable since the token is of no use",
+    "externalTaskType": "NORMAL_TASK",
+    "position": {
+      "x": -320,
+      "y": -368
+    }
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "34",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"baseFunction\": {\n            \"functionType\": {\n              \"baseFunction\": {\n                \"functionName\": \"GET_PROJECT_ID\"\n              }\n            }\n          }\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$project_id$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$`CONFIG_access_token_secret_name`$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$access_token_secret_name$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$`CONFIG_fad_api_audience`$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$fad_api_audience$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "5"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "Export configuration",
+    "externalTaskType": "NORMAL_TASK",
+    "position": {
+      "x": -320,
+      "y": -864
+    }
+  }, {
+    "task": "Secret Manager - Access",
+    "taskId": "5",
+    "parameters": {
+      "projectsId": {
+        "key": "projectsId",
+        "value": {
+          "stringValue": "$project_id$"
+        }
+      },
+      "authConfigName": {
+        "key": "authConfigName",
+        "value": {
+          "stringValue": "$`CONFIG_salesforce_fad_integration_service_account`$"
+        }
+      },
+      "secretsId": {
+        "key": "secretsId",
+        "value": {
+          "stringValue": "$`CONFIG_access_token_secret_name`$"
+        }
+      },
+      "authConfig": {
+        "key": "authConfig",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.authconfig.AuthConfigTaskParam\"\n}"
+        }
+      },
+      "response": {
+        "key": "response",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_5_response`$"]
+          }
+        }
+      },
+      "taskTemplateId": {
+        "key": "taskTemplateId",
+        "value": {
+          "stringValue": "4a22d253-e6f9-4b73-80a5-e20a452b2b47"
+        }
+      },
+      "versionsId": {
+        "key": "versionsId",
+        "value": {
+          "stringValue": "latest"
+        }
+      }
+    },
+    "synchronousCallFailurePolicy": {
+      "retryStrategy": "IGNORE"
+    },
+    "nextTasks": [{
+      "taskId": "9"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "Get stored access token",
+    "description": "Get access token from Secret Manager",
+    "taskTemplate": "Secret Manager - Access",
+    "externalTaskType": "NORMAL_TASK",
+    "position": {
+      "x": -320,
+      "y": -752
+    }
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "6",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$`Task_5_response`$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"jsonFunction\": {\n              \"functionName\": \"GET_PROPERTY\"\n            }\n          },\n          \"parameters\": [{\n            \"initialValue\": {\n              \"literalValue\": {\n                \"stringValue\": \"payload.data\"\n              }\n            }\n          }]\n        }, {\n          \"functionType\": {\n            \"jsonFunction\": {\n              \"functionName\": \"TO_STRING\"\n            }\n          }\n        }, {\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"DECODE_BASE64_STRING\"\n            }\n          }\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$salesforce-sandbox-api-access-token$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "synchronousCallFailurePolicy": {
+      "retryStrategy": "IGNORE"
+    },
+    "nextTasks": [{
+      "taskId": "10"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "Map Access Token",
+    "description": "Get access token from Secret Manager response and store it in a variable",
+    "externalTaskType": "NORMAL_TASK",
+    "position": {
+      "x": -320,
+      "y": -560
+    }
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "9",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"JSON_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$`Task_5_response`$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$secret_manager_response$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "6",
+      "displayName": "token_exists",
+      "description": "If an access token exists in Secret Manager try to parse it"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "Map Secret Manager Response",
+    "description": "Save the response of the Secret Manager request to a variable",
+    "externalTaskType": "NORMAL_TASK",
+    "position": {
+      "x": -320,
+      "y": -656
+    }
   }],
   "integrationParameters": [{
-    "key": "output_order_json",
-    "dataType": "JSON_VALUE",
-    "displayName": "output_order_json",
-    "inputOutputType": "OUT"
+    "key": "`Task_2_responseHeader`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_2_responseHeader`",
+    "isTransient": true,
+    "producer": "1_2"
   }, {
-    "key": "new_structure_json_template",
+    "key": "`Task_2_responseStatus`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_2_responseStatus`",
+    "isTransient": true,
+    "producer": "1_2"
+  }, {
+    "key": "`Task_18_responseHeader`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_18_responseHeader`",
+    "isTransient": true,
+    "producer": "1_18"
+  }, {
+    "key": "`Task_18_responseStatus`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_18_responseStatus`",
+    "isTransient": true,
+    "producer": "1_18"
+  }, {
+    "key": "project_id",
     "dataType": "STRING_VALUE",
     "defaultValue": {
-      "stringValue": "{\n\t\"order\": {\n\t\t\"ordDate\": \"$input_order_json.orderDate$\",\n\t\t\"orderID\": \"$input_order_json.orderNum$\",\n\t\t\"btAddr\": {\n\t\t\t\"btAddr\": \"$input_order_json.billTo.street$ $input_order_json.billTo.city$ $input_order_json.billTo.state$ $input_order_json.billTo.zipCode$\",\n\t\t\t\"btCode\": \"$input_order_json.billTo.billToCode$\"\n\t\t},\n\"stAddr\": {\n\t\t\t\"stAddress\": \"$input_order_json.shipTo.street$ $input_order_json.shipTo.city$ $input_order_json.shipTo.state$ $input_order_json.shipTo.zipCode$\",\n\t\t\t\"stCode\": \"$input_order_json.shipTo.shipToCode$\"\n\t\t}\n\t}\n}"
+      "stringValue": ""
     },
-    "displayName": "new_structure_json_template"
+    "displayName": "project_id"
   }, {
-    "key": "input_order_json",
-    "dataType": "JSON_VALUE",
+    "key": "salesforce-sandbox-api-access-token",
+    "dataType": "STRING_VALUE",
     "defaultValue": {
-      "jsonValue": "{\n  \"orderNum\": \"444\",\n  \"orderDate\": \"29/5/2022\",\n  \"shipTo\": {\n    \"shipToCode\": \"CX3H-XC Sunnyvale, California\",\n    \"street\": \"1155 Borregas Ave\",\n    \"city\": \"Sunnyvale\",\n    \"state\": \"CA\",\n    \"zipCode\": \"94089\"\n  },\n  \"billTo\": {\n    \"billToCode\": \"CX3H+XC Sunnyvale, California\",\n    \"street\": \"1155 Borregas Ave\",\n    \"city\": \"Sunnyvale\",\n    \"state\": \"CA\",\n    \"zipCode\": \"94089\"\n  }\n}"
+      "stringValue": ""
     },
-    "displayName": "input_order_json",
-    "jsonSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"billTo\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"zipCode\": {\n          \"type\": \"string\"\n        },\n        \"city\": {\n          \"type\": \"string\"\n        },\n        \"street\": {\n          \"type\": \"string\"\n        },\n        \"state\": {\n          \"type\": \"string\"\n        },\n        \"billToCode\": {\n          \"type\": \"string\"\n        }\n      }\n    },\n    \"orderNum\": {\n      \"type\": \"string\"\n    },\n    \"orderDate\": {\n      \"type\": \"string\"\n    },\n    \"shipTo\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"zipCode\": {\n          \"type\": \"string\"\n        },\n        \"city\": {\n          \"type\": \"string\"\n        },\n        \"street\": {\n          \"type\": \"string\"\n        },\n        \"shipToCode\": {\n          \"type\": \"string\"\n        },\n        \"state\": {\n          \"type\": \"string\"\n        }\n      }\n    }\n  }\n}"
-  }]
+    "displayName": "salesforce-sandbox-api-access-token",
+    "masked": true
+  }, {
+    "key": "`Task_5_response`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_5_response`",
+    "isTransient": true,
+    "producer": "1_5",
+    "jsonSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"payload\": {\n      \"properties\": {\n        \"dataCrc32c\": {\n          \"description\": \"Optional. If specified, SecretManagerService will verify the integrity of the received data on SecretManagerService.AddSecretVersion calls using the crc32c checksum and store it to include in future SecretManagerService.AccessSecretVersion responses. If a checksum is not provided in the SecretManagerService.AddSecretVersion request, the SecretManagerService will generate and store one for you. The CRC32C value is encoded as a Int64 for compatibility, and can be safely downconverted to uint32 in languages that support this type. https://cloud.google.com/apis/design/design_patterns#integer_types\",\n          \"format\": \"int64\",\n          \"type\": \"string\"\n        },\n        \"data\": {\n          \"type\": \"string\",\n          \"format\": \"byte\",\n          \"description\": \"The secret data. Must be no larger than 64KiB.\"\n        }\n      },\n      \"type\": \"object\",\n      \"description\": \"A secret payload resource in the Secret Manager API. This contains the sensitive secret payload that is associated with a SecretVersion.\"\n    },\n    \"name\": {\n      \"type\": \"string\",\n      \"description\": \"The resource name of the SecretVersion in the format `projects/*/secrets/*/versions/*`.\"\n    }\n  }\n}",
+    "masked": true
+  }, {
+    "key": "`Task_13_response`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_13_response`",
+    "isTransient": true,
+    "producer": "1_13",
+    "jsonSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"payload\": {\n      \"properties\": {\n        \"dataCrc32c\": {\n          \"description\": \"Optional. If specified, SecretManagerService will verify the integrity of the received data on SecretManagerService.AddSecretVersion calls using the crc32c checksum and store it to include in future SecretManagerService.AccessSecretVersion responses. If a checksum is not provided in the SecretManagerService.AddSecretVersion request, the SecretManagerService will generate and store one for you. The CRC32C value is encoded as a Int64 for compatibility, and can be safely downconverted to uint32 in languages that support this type. https://cloud.google.com/apis/design/design_patterns#integer_types\",\n          \"format\": \"int64\",\n          \"type\": \"string\"\n        },\n        \"data\": {\n          \"type\": \"string\",\n          \"format\": \"byte\",\n          \"description\": \"The secret data. Must be no larger than 64KiB.\"\n        }\n      },\n      \"type\": \"object\",\n      \"description\": \"A secret payload resource in the Secret Manager API. This contains the sensitive secret payload that is associated with a SecretVersion.\"\n    },\n    \"name\": {\n      \"type\": \"string\",\n      \"description\": \"The resource name of the SecretVersion in the format `projects/*/secrets/*/versions/*`.\"\n    }\n  }\n}",
+    "masked": true
+  }, {
+    "key": "`Task_2_responseBody`",
+    "dataType": "STRING_VALUE",
+    "defaultValue": {
+      "stringValue": ""
+    },
+    "displayName": "`Task_2_responseBody`",
+    "isTransient": true,
+    "producer": "1_2",
+    "masked": true
+  }, {
+    "key": "`Task_15_response`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_15_response`",
+    "isTransient": true,
+    "producer": "1_15",
+    "jsonSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"payload\": {\n      \"properties\": {\n        \"dataCrc32c\": {\n          \"description\": \"Optional. If specified, SecretManagerService will verify the integrity of the received data on SecretManagerService.AddSecretVersion calls using the crc32c checksum and store it to include in future SecretManagerService.AccessSecretVersion responses. If a checksum is not provided in the SecretManagerService.AddSecretVersion request, the SecretManagerService will generate and store one for you. The CRC32C value is encoded as a Int64 for compatibility, and can be safely downconverted to uint32 in languages that support this type. https://cloud.google.com/apis/design/design_patterns#integer_types\",\n          \"format\": \"int64\",\n          \"type\": \"string\"\n        },\n        \"data\": {\n          \"type\": \"string\",\n          \"format\": \"byte\",\n          \"description\": \"The secret data. Must be no larger than 64KiB.\"\n        }\n      },\n      \"type\": \"object\",\n      \"description\": \"A secret payload resource in the Secret Manager API. This contains the sensitive secret payload that is associated with a SecretVersion.\"\n    },\n    \"name\": {\n      \"type\": \"string\",\n      \"description\": \"The resource name of the SecretVersion in the format `projects/*/secrets/*/versions/*`.\"\n    }\n  }\n}",
+    "masked": true
+  }, {
+    "key": "`Task_18_responseBody`",
+    "dataType": "STRING_VALUE",
+    "defaultValue": {
+      "stringValue": ""
+    },
+    "displayName": "`Task_18_responseBody`",
+    "isTransient": true,
+    "producer": "1_18",
+    "masked": true
+  }, {
+    "key": "access_token_expired",
+    "dataType": "BOOLEAN_VALUE",
+    "displayName": "access_token_expired"
+  }, {
+    "key": "access_token_secret_name",
+    "dataType": "STRING_VALUE",
+    "defaultValue": {
+      "stringValue": ""
+    },
+    "displayName": "access_token_secret_name"
+  }, {
+    "key": "auth_payload",
+    "dataType": "STRING_VALUE",
+    "defaultValue": {
+      "stringValue": ""
+    },
+    "displayName": "auth_payload",
+    "masked": true
+  }, {
+    "key": "client_id",
+    "dataType": "STRING_VALUE",
+    "defaultValue": {
+      "stringValue": ""
+    },
+    "displayName": "client_id",
+    "masked": true
+  }, {
+    "key": "client_secret",
+    "dataType": "STRING_VALUE",
+    "defaultValue": {
+      "stringValue": ""
+    },
+    "displayName": "client_secret",
+    "masked": true
+  }, {
+    "key": "encoded_access_token",
+    "dataType": "STRING_VALUE",
+    "defaultValue": {
+      "stringValue": ""
+    },
+    "displayName": "encoded_access_token",
+    "masked": true
+  }, {
+    "key": "secret_manager_response",
+    "dataType": "JSON_VALUE",
+    "displayName": "secret_manager_response",
+    "masked": true
+  }, {
+    "key": "update_access_token_secret_url",
+    "dataType": "STRING_VALUE",
+    "defaultValue": {
+      "stringValue": ""
+    },
+    "displayName": "update_access_token_secret_url"
+  }, {
+    "key": "update_secret_payload",
+    "dataType": "STRING_VALUE",
+    "defaultValue": {
+      "stringValue": ""
+    },
+    "displayName": "update_secret_payload",
+    "masked": true
+  }, {
+    "key": "fad_api_audience",
+    "dataType": "STRING_VALUE",
+    "defaultValue": {
+      "stringValue": ""
+    },
+    "displayName": "fad_api_audience"
+  }],
+  "databasePersistencePolicy": "DATABASE_PERSISTENCE_DISABLED",
+  "cloudLoggingDetails": {
+    "cloudLoggingSeverity": "CLOUD_LOGGING_SEVERITY_UNSPECIFIED",
+    "enableCloudLogging": false
+  },
+  "integrationConfigParameters": [{
+    "parameter": {
+      "key": "`CONFIG_client_id_secret_name`",
+      "dataType": "STRING_VALUE",
+      "defaultValue": {
+        "stringValue": "ad-quality-cron-dev-client-id"
+      },
+      "displayName": "`CONFIG_client_id_secret_name`"
+    },
+    "value": {
+      "stringValue": "ad-quality-cron-dev-client-id"
+    }
+  }, {
+    "parameter": {
+      "key": "`CONFIG_client_secret_secret_name`",
+      "dataType": "STRING_VALUE",
+      "defaultValue": {
+        "stringValue": "ad-quality-cron-dev-client-secret"
+      },
+      "displayName": "`CONFIG_client_secret_secret_name`"
+    },
+    "value": {
+      "stringValue": "ad-quality-cron-dev-client-secret"
+    }
+  }, {
+    "parameter": {
+      "key": "`CONFIG_fad_api_auth_url`",
+      "dataType": "STRING_VALUE",
+      "defaultValue": {
+        "stringValue": "https://freestar-dev.auth0.com/oauth/token"
+      },
+      "displayName": "`CONFIG_fad_api_auth_url`"
+    },
+    "value": {
+      "stringValue": "https://freestar-dev.auth0.com/oauth/token"
+    }
+  }, {
+    "parameter": {
+      "key": "`CONFIG_access_token_secret_name`",
+      "dataType": "STRING_VALUE",
+      "defaultValue": {
+        "stringValue": "generated_fad_integration_access_token"
+      },
+      "displayName": "`CONFIG_access_token_secret_name`"
+    },
+    "value": {
+      "stringValue": "generated_fad_integration_access_token"
+    }
+  }, {
+    "parameter": {
+      "key": "`CONFIG_fad_api_audience`",
+      "dataType": "STRING_VALUE",
+      "defaultValue": {
+        "stringValue": "https://dev-api.pub.network"
+      },
+      "displayName": "`CONFIG_fad_api_audience`"
+    },
+    "value": {
+      "stringValue": "https://dev-api.pub.network"
+    }
+  }, {
+    "parameter": {
+      "key": "`CONFIG_salesforce_fad_integration_service_account`",
+      "dataType": "STRING_VALUE",
+      "defaultValue": {
+        "stringValue": "salesforce-integration"
+      },
+      "displayName": "`CONFIG_salesforce_fad_integration_service_account`"
+    },
+    "value": {
+      "stringValue": "salesforce-integration"
+    }
+  }],
+  "enableVariableMasking": true
 }

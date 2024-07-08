@@ -1,5 +1,5 @@
 {
-  "displayName": "integration-auth",
+  "displayName": "salesforce-integration",
   "visibility": "CLIENT_VISIBLE",
   "state": "VALID",
   "decryptedCredential": {
