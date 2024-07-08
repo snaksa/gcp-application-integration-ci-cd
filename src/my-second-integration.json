@@ -970,13 +970,7 @@
     "parameter": {
       "key": "`CONFIG_fad_api_audience`",
       "dataType": "STRING_VALUE",
-      "defaultValue": {
-        "stringValue": "https://dev-api.pub.network"
-      },
       "displayName": "`CONFIG_fad_api_audience`"
-    },
-    "value": {
-      "stringValue": "https://dev-api.pub.network"
     }
   }, {
     "parameter": {
