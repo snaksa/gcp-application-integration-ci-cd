@@ -1,0 +1,8 @@
+{
+  "`CONFIG_client_id_secret_name`": "ad-quality-cron-dev-client-id",
+  "`CONFIG_client_secret_secret_name`": "ad-quality-cron-dev-client-secret",
+  "`CONFIG_fad_api_auth_url`": "https://freestar-dev.auth0.com/oauth/token",
+  "`CONFIG_access_token_secret_name`": "generated_fad_integration_access_token",
+  "`CONFIG_fad_api_audience`": "https://dev-api.pub.networkSINAN",
+  "`CONFIG_salesforce_fad_integration_service_account`": "salesforce-integration"
+}
