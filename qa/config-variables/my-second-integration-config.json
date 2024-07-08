@@ -1,0 +1,8 @@
+{
+  "`CONFIG_client_id_secret_name`": "qa1",
+  "`CONFIG_client_secret_secret_name`": "qa2",
+  "`CONFIG_fad_api_auth_url`": "qa3",
+  "`CONFIG_access_token_secret_name`": "qa4",
+  "`CONFIG_fad_api_audience`": "qa5",
+  "`CONFIG_salesforce_fad_integration_service_account`": "salesforce-integration"
+}
