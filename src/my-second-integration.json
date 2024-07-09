@@ -1,19 +1,19 @@
 {
-  "name": "projects/202416205871/locations/us-central1/integrations/generate-auth-token-integration/versions/71baff38-648c-48a6-a610-b09508ea3c72",
-  "updateTime": "2024-07-08T09:02:22.879Z",
-  "createTime": "2024-07-08T08:59:01.346Z",
+  "name": "projects/202416205871/locations/us-central1/integrations/generate-auth-token-integration/versions/3df2d859-651c-4f9c-9b66-f6a3c7b38e8d",
+  "updateTime": "2024-07-09T07:12:08.479Z",
+  "createTime": "2024-07-09T07:10:34.141Z",
   "lastModifierEmail": "sinan.shaban@freestar.io",
   "triggerConfigs": [{
-    "label": "SecretManager Trigger",
+    "label": "FAD TOKEN TRIGGER",
     "startTasks": [{
       "taskId": "34"
     }],
     "properties": {
-      "Trigger name": "FreestarDev_API_3"
+      "Trigger name": "FREESTAR_FAD_TOKEN_TRIGGER"
     },
     "triggerType": "API",
     "triggerNumber": "3",
-    "triggerId": "api_trigger/FreestarDev_API_3",
+    "triggerId": "api_trigger/FREESTAR_FAD_TOKEN_TRIGGER",
     "position": {
       "x": -320,
       "y": -976
