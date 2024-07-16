@@ -45,7 +45,9 @@ steps:
 #        integrationcli integrations apply -f . -e dev --wait=true --verbose
 options:
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
-  automapSubstitutions: true
   env:
-    - MY_SECRET=t1
-    - MY_SUPER_SECRET=t2
+    - MY_DEV_SECRET=t1
+    - MY_DEV_SUPER_SECRET=t2
+substitutions:
+  MY_SECRET: $MY_DEV_SECRET
+  MY_SUPER_SECRET: $MY_DEV_SUPER_SECRET
