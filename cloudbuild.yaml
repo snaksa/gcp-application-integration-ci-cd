@@ -10,7 +10,7 @@ steps:
       - --trigger-http
       - --runtime=nodejs20
       - --set-env-vars
-      - MY_SECRET=$_MY_DEV_SECRET
+      - MY_SECRET=$_MY_SECRET
       - --gen2
 #    env:
 #      - "MY_SECRET_LATEST: $MY_DEV_SECRET"
@@ -48,5 +48,3 @@ steps:
 #        integrationcli integrations apply -f . -e dev --wait=true --verbose
 options:
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
-substitutions:
-  _MY_DEV_SECRET: t1
