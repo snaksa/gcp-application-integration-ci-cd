@@ -45,3 +45,4 @@ steps:
 #        integrationcli integrations apply -f . -e dev --wait=true --verbose
 options:
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
+  automapSubstitutions: true
