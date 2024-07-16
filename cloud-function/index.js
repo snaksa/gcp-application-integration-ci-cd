@@ -7,5 +7,8 @@ functions.http('poc-function-deployment', async (req, res) => {
         MY_ULTRA_SECRET: process.env.MY_ULTRA_SECRET
     })
 
-    res.status(200).send({success: true});
+    res.status(200).send({
+        MY_SECRET: process.env.MY_SECRET,
+        MY_ULTRA_SECRET: process.env.MY_ULTRA_SECRET
+    });
 });

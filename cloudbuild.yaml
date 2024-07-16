@@ -10,7 +10,7 @@ steps:
       - --trigger-http
       - --runtime=nodejs20
       - --set-env-vars
-      - MY_SECRET=${_MY_SECRET},MY_ULTRA_SECRET=${_MY_ULTRA_SECRET}
+      - MY_SECRET=$_MY_SECRET,MY_ULTRA_SECRET=$_MY_ULTRA_SECRET
       - --gen2
 #  - name: 'gcr.io/cloud-builders/gcloud'
 #    entrypoint: 'bash'
