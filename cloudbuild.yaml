@@ -10,8 +10,11 @@ steps:
       - --trigger-http
       - --runtime=nodejs20
       - --set-env-vars
-      - MY_SECRET=$_MY_SECRET_LATEST,MY_ULTRA_SECRET=$_MY_SUPER_SECRET_LATEST
+      - MY_SECRET=$_MY_main_SECRET
       - --gen2
+#    env:
+#      - "MY_SECRET_LATEST: $MY_DEV_SECRET"
+#      - MY_SUPER_SECRET_LATEST: $MY_DEV_SUPER_SECRET
 #  - name: 'gcr.io/cloud-builders/gcloud'
 #    entrypoint: 'bash'
 #    args:
@@ -45,9 +48,5 @@ steps:
 #        integrationcli integrations apply -f . -e dev --wait=true --verbose
 options:
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
-  env:
-    - MY_DEV_SECRET=t1
-    - MY_DEV_SUPER_SECRET=t2
 substitutions:
-  _MY_SECRET_LATEST: $MY_DEV_SECRET
-  _MY_SUPER_SECRET_LATEST: $MY_DEV_SUPER_SECRET
+  _MY_main_SECRET: t1
