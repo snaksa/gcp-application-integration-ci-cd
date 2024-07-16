@@ -9,6 +9,7 @@ steps:
       - --source=./cloud-function
       - --trigger-http
       - --runtime=nodejs20
+      - --set-env-vars MY_SECRET="super_secret",MY_ULTRA_SECRET="ultra_secret"
       - --gen2
 #  - name: 'gcr.io/cloud-builders/gcloud'
 #    entrypoint: 'bash'
